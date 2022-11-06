@@ -1,0 +1,74 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ejemplovideo2;
+
+import static java.lang.Thread.sleep;
+
+/**
+ *
+ * @author Francis
+ */
+public class Hilo2 implements Runnable
+{
+    private String nombre;
+    private int dormir;
+    
+    public Hilo2(String nombre, int dormir)
+    {
+        this.nombre = nombre;
+        this.dormir = dormir;
+    }
+    
+    @Override
+    public void run()
+    {
+        for (int i = 0; i < 10; i++) 
+        {
+            System.out.println("Soy el hilo2 " + nombre + " en la iteración " + i);
+            try 
+            {
+                sleep(dormir);
+            } 
+            catch (InterruptedException ex) 
+            {
+                System.out.println("Error: " + ex.toString());
+            }
+        }
+    }
+}
+
+
+
+
+
+MAIN
+
+
+package ejemplovideo2;
+
+/**
+ *
+ * @author Francis
+ */
+public class EjemploVideo2 {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // Creamos los hilos
+        Hilo2 hilo1 = new Hilo2("Hilo 1", 1000);        
+        Hilo2 hilo2 = new Hilo2("Hilo 2", 1000);
+        
+        Thread hebra1 = new Thread(hilo1);
+        Thread hebra2 = new Thread(hilo2);
+        
+        // Lanzamos los hilos
+        hebra1.start();
+        hebra2.start();
+    }
+    
+}
