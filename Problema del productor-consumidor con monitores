@@ -1,0 +1,182 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ejemplovideo2;
+
+/**
+ * Esta clase representa el productor
+ * @author Francisco Jesús Delgado Almirón
+ */
+public class Productor extends Thread 
+{
+    private Buffer almacen;
+    private int dormir;
+    
+    /**
+     * Constructor del productor
+     * @param almacen Buffer donde se producirán los recursos
+     * @param dormir Tiempo que dormirá el productor
+     */
+    public Productor(Buffer almacen, int dormir) 
+    {
+        this.almacen = almacen;
+        this.dormir = dormir;
+    }
+    
+    public void run() 
+    {
+        for (int i = 0; i < 10; i++) 
+        {
+            almacen.put(i);
+            System.out.println("Productor pone: " + i);
+            try 
+            {
+                sleep(dormir);
+            } 
+            catch (InterruptedException e) 
+            {
+                System.err.println("Error en el productor: " + e.toString());
+            }
+        }
+    }
+}
+
+
+
+
+
+package ejemplovideo2;
+
+/**
+ *
+ * @author Francis
+ */
+public class EjemploVideo2 {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        final int DORMIR_PRODUCTOR = 1000, DORMIR_CONSUMIDOR = 2000;
+        
+        Buffer almacen = new Buffer();
+        Productor productor = new Productor(almacen, DORMIR_PRODUCTOR);
+        Consumidor consumidor = new Consumidor(almacen, DORMIR_CONSUMIDOR);
+        
+        productor.start();
+        consumidor.start();
+    }
+    
+}
+
+
+
+
+
+
+CONSUMIDOR
+
+package ejemplovideo2;
+
+/**
+ * Esta clase representa al productor
+ * @author Francisco Jesús Delgado Almirón
+ */
+public class Consumidor extends Thread 
+{
+    private Buffer almacen;
+    private int dormir;
+    
+    /**
+     * Constructor del consumidor
+     * @param almacen Buffer de donde se obtendrán los recursos
+     * @param dormir Tiempo que dormirá el consumidor
+     */
+    public Consumidor(Buffer almacen, int dormir) 
+    {
+        this.almacen = almacen;
+        this.dormir = dormir;
+    }
+    
+    public void run() 
+    {
+        int valor = 0;
+        for (int i = 0; i < 10; i++) 
+        {
+            valor = almacen.get();
+            System.out.println("Consumidor saca: "+ valor);
+            try 
+            {
+                sleep(dormir);
+            }
+            catch (InterruptedException e) 
+            {
+                System.err.println("Error en el consumidor: " + e.toString());
+            }
+        }
+    }
+}
+
+
+
+
+
+BUFFER
+
+package ejemplovideo2;
+
+/**
+ * Esta clase representa el almacén, es decir, el recurso que se produce y se consume (Versión sincronizada)
+ * @author Francisco Jesús Delgado Almirón
+ */
+public class Buffer 
+{
+    private int contenido;
+    private boolean disponible = false;
+    
+    /**
+     * Obtiene el contenido del buffer
+     * @return Contenido del buffer
+     */
+    public synchronized int get() 
+    {
+        // Mientras el buffer no esté disponible
+        while (disponible == false) 
+        {
+            try 
+            {
+                // me espero a que produzcan
+                wait();
+            } 
+            catch (InterruptedException e) {}
+        }
+        // Cuando vuelve a estar disponible, notifico que está disponible
+        disponible = false;
+        notify();
+        return contenido;
+    }
+    
+    /**
+     * Inserta un valor dentro del buffer
+     * @param value Valor para insertar
+     */
+    public synchronized void put(int value) 
+    {
+        // Mientras el buffer esté disponible
+        while (disponible == true) 
+        {
+            try 
+            {
+                // me espero a que consuman
+                wait();
+            } 
+            catch (InterruptedException e) {}
+        }
+        // Cuando vuelve a estar disponible, notifico que está disponible
+        contenido = value;
+        disponible = true;
+        notify();
+    }  
+}
