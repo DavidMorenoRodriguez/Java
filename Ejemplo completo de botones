@@ -1,0 +1,73 @@
+ACTIVITY MAIN
+
+package com.example.ejemplovideo1;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+public class ExampleUnitTest {
+    @Test
+    public void addition_isCorrect() {
+        assertEquals(4, 2 + 2);
+    }
+}
+
+
+
+
+
+
+MAIN ACTIVITY
+
+package com.example.ejemplovideo1;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    // Creamos los elementos gráficos
+    private TextView tMensaje;
+    private Button bBoton1, bBoton2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Ligamos los elementos gráficos
+        tMensaje = findViewById(R.id.tMensaje);
+        bBoton1 = findViewById(R.id.bBoton1);
+        bBoton2 = findViewById(R.id.bBoton2);
+
+        // Damos la funcionalidad a los botones
+        bBoton1.setOnClickListener(this);
+        bBoton2.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            // Hemos pulsado el botón con id bBoton1
+            case R.id.bBoton1:
+                String mensaje1 = getResources().getString(R.string.mensaje1);
+                tMensaje.setText(mensaje1);
+                break;
+            // Hemos pulsado el botón con id bBoton2
+            case R.id.bBoton2:
+                String mensaje2 = getResources().getString(R.string.mensaje2);
+                tMensaje.setText(mensaje2);
+                break;
+        }
+    }
+}
