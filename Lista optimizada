@@ -1,0 +1,197 @@
+package com.example.myapplication;
+
+public class ElementoLista {
+    private String texto1, texto2;
+
+    public ElementoLista(String texto1, String texto2) {
+        this.texto1 = texto1;
+        this.texto2 = texto2;
+    }
+
+    public String getTexto1() {
+        return texto1;
+    }
+
+    public void setTexto1(String texto1) {
+        this.texto1 = texto1;
+    }
+
+    public String getTexto2() {
+        return texto2;
+    }
+
+    public void setTexto2(String texto2) {
+        this.texto2 = texto2;
+    }
+}
+
+
+
+
+
+
+
+
+ADPTADOR DE EJEMPLO
+
+package com.example.myapplication;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+public class AdaptadorEjemplo extends RecyclerView.Adapter<AdaptadorEjemplo.HolderEjemplo> {
+
+    /**
+     * Clase interna equivalente al Holder de los elementos
+     */
+    public static class HolderEjemplo extends RecyclerView.ViewHolder
+    {
+        TextView tEjemplo1, tEjemplo2;
+        HolderEjemplo(View itemView)
+        {
+            /*
+                En el constructor obtendremos los recursos del fichero
+                de recursos xml que tengamos asociado a la clase, en
+                este caso el fichero elemento.xml
+            */
+            super(itemView);
+            tEjemplo1 = itemView.findViewById(R.id.tEjemplo1);
+            tEjemplo2 = itemView.findViewById(R.id.tEjemplo2);
+            // Si hubiera que sobrecargar eventos se haria aqui
+        }
+    };
+
+    // Atributos de la clase AdaptadorEjemplo
+    private ArrayList<ElementoLista> elementos;
+    private Context contexto;
+
+    /**
+     * Constructor de la clase
+     * @param contexto Contexto de la aplicación
+     * @param elementos Elementos de la lista
+     */
+    public AdaptadorEjemplo(Context contexto, ArrayList<ElementoLista> elementos)
+    {
+        this.contexto = contexto;
+        this.elementos = elementos;
+    }
+
+    /**
+     * Agrega los datos que queramos mostrar
+     * @param datos Datos a mostrar, en este caso, los elementos básicos de la lista
+     */
+    public void add(ArrayList<ElementoLista> datos)
+    {
+        elementos.clear();
+        elementos.addAll(datos);
+    }
+
+    /**
+     * Actualiza los datos del ReciclerView
+     */
+    public void refrescar()
+    {
+        notifyDataSetChanged();
+    }
+
+    @Override
+    /**
+     * Este método irá creando uno a uno los elementos de la lista optimizando el uso de memoria del dispositivo
+     */
+    public HolderEjemplo onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.elemento, parent, false);
+        HolderEjemplo pvh = new HolderEjemplo(v);
+        return pvh;
+    }
+
+    @Override
+    /**
+     * Este método mostrará los datos de cada elemento que esté visible en la lista
+     */
+    public void onBindViewHolder(HolderEjemplo elementoactual, int position)
+    {
+        // Ponemos los datos correspondientes al titular de posicion position
+        elementoactual.tEjemplo1.setText(elementos.get(position).getTexto1());
+        elementoactual.tEjemplo2.setText(elementos.get(position).getTexto2());
+    }
+
+    @Override
+    /**
+     * Este método devolverá la cantidad de elementos que hay en la lista
+     */
+    public int getItemCount()
+    {
+        return elementos.size();
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+}
+
+
+
+
+
+
+
+
+MAIN ACTIVITY
+
+package com.example.ejemplovideo1;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    // Creamos los elementos gráficos
+    private TextView tMensaje;
+    private Button bBoton1, bBoton2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Ligamos los elementos gráficos
+        tMensaje = findViewById(R.id.tMensaje);
+        bBoton1 = findViewById(R.id.bBoton1);
+        bBoton2 = findViewById(R.id.bBoton2);
+
+        // Damos la funcionalidad a los botones
+        bBoton1.setOnClickListener(this);
+        bBoton2.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            // Hemos pulsado el botón con id bBoton1
+            case R.id.bBoton1:
+                String mensaje1 = getResources().getString(R.string.mensaje1);
+                tMensaje.setText(mensaje1);
+                break;
+            // Hemos pulsado el botón con id bBoton2
+            case R.id.bBoton2:
+                String mensaje2 = getResources().getString(R.string.mensaje2);
+                tMensaje.setText(mensaje2);
+                break;
+        }
+    }
+}
